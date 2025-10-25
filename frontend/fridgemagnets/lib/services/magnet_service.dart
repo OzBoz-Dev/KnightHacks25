@@ -1,21 +1,97 @@
+import 'dart:convert';
 import 'package:fridgemagnets/models/magnet.dart';
+import 'package:http/http.dart' as http;
 
 class MagnetService {
 
+  final String url = "http://10.37.48.242:5000/api/magnets/";
+
   // GET magnets (localhost/api/magnets)
-  // TODO: IMPLEMENT THIS FUNCTION
-  Future<List<Magnet>> getMagnets({int fridgeId = 0}) async {
-    return [];
+  Future<Magnet> getMagnetById({int magnetId = 0}) async {
+    final response = await http.get(
+      Uri.parse("$url?id=$magnetId"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    Magnet magnet = Magnet(
+      id: decoded['id'],
+      fridgeId: decoded['fridge_id'],
+      userId: decoded['user_id'],
+      text: decoded['text'],
+      color: decoded['color'],
+      x: decoded['x'],
+      y: decoded['y'],
+      imageUrl: decoded['image_url']
+    );
+    return magnet;
   }
 
-  // POST magnet data when placing or removing
-  // TODO: IMPLEMENT THIS FUNCTION
-  Future<void> placeOrUpdateMagnet(Magnet magnet) async {
+  // POST magnet when placing
+  Future<void> createMagnet(Magnet magnet) async {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: jsonEncode({
+        "fridge_id": magnet.fridgeId,
+        "user_id": magnet.userId,
+        "text": magnet.text,
+        "color": magnet.color?.toARGB32(),
+        "x": magnet.x,
+        "y": magnet.y,
+        "image_url": magnet.imageUrl,
+      })
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Failed to update magnet - Status Code: ${response.statusCode}');
+    }
+
+    print("Status code: ${response.statusCode}");
+  }
+
+  // PATCH magnet data when moving
+  Future<void> updateMagnet(Magnet magnet) async {
+    final response = await http.patch(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: jsonEncode({
+        "id": magnet.id,
+        "fridge_id": magnet.fridgeId,
+        "user_id": magnet.userId,
+        "text": magnet.text,
+        "color": magnet.color?.toARGB32(),
+        "x": magnet.x,
+        "y": magnet.y,
+        "image_url": magnet.imageUrl,
+      })
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Failed to update magnet - Status Code: ${response.statusCode}');
+    }
   }
 
   // DELETE magnet data when a magnet is deleted
-  // TODO: IMPLEMENT THIS FUNCTION
   Future<void> deleteMagnet(Magnet magnet) async {
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "id": magnet.id
+      })
+    );
+
+    if(response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception("Failed to delete magnet - Status Code: ${response.statusCode}");
+    }
   }
 
 }
