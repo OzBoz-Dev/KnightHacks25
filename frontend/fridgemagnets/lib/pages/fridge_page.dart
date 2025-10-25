@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FridgePage extends StatefulWidget {
-  const FridgePage({super.key});
+  final String fridgeName;
+  const FridgePage({super.key, required this.fridgeName});
 
   @override
   State<FridgePage> createState() => _FridgePageState();
@@ -10,6 +11,9 @@ class FridgePage extends StatefulWidget {
 class _FridgePageState extends State<FridgePage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.fridgeName),),
+      body: const Placeholder(),
+    );
   }
 }
