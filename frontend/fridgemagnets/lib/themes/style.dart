@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 ThemeData fridgeMagnetsTheme = ThemeData(
   colorScheme: ColorScheme.light(
@@ -12,16 +13,30 @@ ThemeData fridgeMagnetsTheme = ThemeData(
   appBarTheme: AppBarTheme(
     data: AppBarThemeData(
       backgroundColor: Colors.blue[500],
-      titleTextStyle: TextStyle(
+      titleTextStyle: GoogleFonts.outfit(
         color: Colors.white,
         fontSize: 18,
         fontWeight: FontWeight.bold
       ),
+      iconTheme: IconThemeData(
+        color: Colors.white,
+        size: 28
+      ),
       actionsIconTheme: IconThemeData(
         color: Colors.white,
         size: 28
-      )
+      ),
     ),
   ),
+  textTheme: GoogleFonts.outfitTextTheme().apply(),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStatePropertyAll(Colors.blue[500]),
+      textStyle: WidgetStatePropertyAll(GoogleFonts.outfit(
+        color: Colors.white,
+        fontSize: 18,
+      ))
+    )
+  )
 
 );
