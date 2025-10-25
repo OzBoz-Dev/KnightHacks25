@@ -15,10 +15,10 @@ JSON Schema for fridge:
 '''
 @fridges.route('/api/fridges/', methods=['GET'])
 def get_fridge_by_id():
-    data = request.json
-    if not data or 'fridge_id' not in data:
-        return jsonify({'error': 'Invalid input'}), 400
-    fridge_id = data['fridge_id']
+    data = request.args.get('id')
+    if not data:
+        return get_all_fridges()
+    fridge_id = int(data)
     try:
         conn = db_helper.get_connection()
         cursor = conn.cursor()
@@ -28,6 +28,22 @@ def get_fridge_by_id():
         fridge_dict['magnets'] = [dict(magnet) for magnet in cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
         conn.close()
         return jsonify(fridge_dict)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def get_all_fridges():
+    try:
+        conn = db_helper.get_connection()
+        cursor = conn.cursor()
+        fridges = cursor.execute('SELECT * FROM fridges').fetchall()
+        fridges_list = []
+        for fridge in fridges:
+            fridge_dict = dict(fridge)
+            fridge_id = fridge_dict['fridge_id']
+            fridge_dict['magnets'] = [dict(magnet) for magnet in cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
+            fridges_list.append(fridge_dict)
+        conn.close()
+        return jsonify(fridges_list)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -50,7 +66,7 @@ def create_fridge():
         conn.close()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    return jsonify({'message': 'Fridge created successfully', 'fridge_id' : fridge_id}, 201)
+    return jsonify({'message': 'Fridge created successfully', 'fridge_id' : fridge_id, 'status': 201})
 
 @fridges.route('/api/fridges/', methods=['PATCH'])
 def update_fridge():
