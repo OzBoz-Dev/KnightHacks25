@@ -4,13 +4,13 @@ class Magnet {
   final int id;
   final int fridgeId;
   final String? userId; // the user who placed the magnet
-  final String? text;
-  final Color? color; // from hex code
-  final double? x;
-  final double? y;
-  final String? imageUrl;
+  String? text;
+  Color? color; // from hex code
+  double? x;
+  double? y;
+  String? imageUrl;
 
-  const Magnet({
+  Magnet({
     required this.id,
     required this.fridgeId,
     required this.userId,

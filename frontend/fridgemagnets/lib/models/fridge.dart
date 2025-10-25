@@ -1,9 +1,13 @@
+import 'package:fridgemagnets/models/magnet.dart';
+
 class Fridge {
   final int id;
-  final String name;
+  String name;
+  List<Magnet> magnets;
 
-  const Fridge({
+  Fridge({
     required this.id,
-    required this.name
+    required this.name,
+    required this.magnets
   });
 }
