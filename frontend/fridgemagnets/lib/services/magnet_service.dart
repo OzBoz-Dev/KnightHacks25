@@ -8,15 +8,14 @@ class MagnetService {
     return [];
   }
 
-
-  // POST magnet data when placing a new magnet
+  // POST magnet data when placing or removing
   // TODO: IMPLEMENT THIS FUNCTION
-  Future<void> placeMagnet(Magnet magnet) async {
+  Future<void> placeOrUpdateMagnet(Magnet magnet) async {
   }
 
-  // PUT magnet data when moving a magnet
+  // DELETE magnet data when a magnet is deleted
   // TODO: IMPLEMENT THIS FUNCTION
-  Future<void> updateMagnet(Magnet magnet) async {
+  Future<void> deleteMagnet(Magnet magnet) async {
   }
 
 }
