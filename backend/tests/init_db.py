@@ -1,5 +1,8 @@
 import sqlite3
-import db_helper
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from backend import db_helper
 
 def init_db():
     conn = db_helper.get_connection()
@@ -57,7 +60,7 @@ def init_all():
     conn.close()
     
 if __name__ == '__main__':
-    # bobby_tables()
+    bobby_tables()
     init_db()
     init_all()
     conn = db_helper.get_connection()

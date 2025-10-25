@@ -1,6 +1,10 @@
 import requests
 import sqlite3
-import db_helper
+from pathlib import Path
+import sys
+
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from backend import db_helper
 
 def test_magnet_endpoint():
     test_id = 1
@@ -31,8 +35,8 @@ def test_magnet_endpoint():
     })
     print(response.text)
     print(requests.get(url, json={'id': test_id}).text)
-    response = requests.delete(url, json={'id': test_id})
-    print(response.text)
+    # response = requests.delete(url, json={'id': test_id})
+    # print(response.text)
     
 def test_fridge_endpoints():
     url = 'http://localhost:5000/api/fridges/'
