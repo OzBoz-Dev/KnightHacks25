@@ -3,13 +3,13 @@ from flask_login import LoginManager
 import sqlite3
 from fridges import fridges
 from magnets import magnets
-from users import users
+# from users import users
 import db_helper
 
 app = Flask(__name__)
 app.register_blueprint(fridges)
 app.register_blueprint(magnets)
-app.register_blueprint(users)
+# app.register_blueprint(users)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
