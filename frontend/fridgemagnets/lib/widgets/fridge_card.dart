@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fridgemagnets/pages/fridge_page.dart';
 
 class FridgeCard extends StatelessWidget {
   final String fridgeName;
@@ -8,29 +9,37 @@ class FridgeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Container( // Fridge thumbnail placeholder
-              width: 300,
-              height: 200,
-              color: Colors.grey,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FridgePage(fridgeName: fridgeName))
+          );
+        },
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Container( // Fridge thumbnail placeholder
+                width: 300,
+                height: 200,
+                color: Colors.grey,
+              ),
             ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                fridgeName,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 18,
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  fridgeName,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 18,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
