@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fridgemagnets/widgets/fridge_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,9 +17,27 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Center(
-          child: Text(
-            "Fridges list here"
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  "Fridges list here"
+                ),
+              ),
+              ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: 30,
+                itemBuilder: (context, index) {
+                  return FridgeCard(
+                    fridgeName: "Fridge ${index + 1}"
+                  );
+                },
+              )
+            ],
           ),
         )
       )
