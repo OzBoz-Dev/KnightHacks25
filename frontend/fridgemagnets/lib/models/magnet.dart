@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class Magnet {
-  final int id;
+  int? id;
   final int fridgeId;
   final String? userId; // the user who placed the magnet
   String? text;
@@ -11,7 +11,7 @@ class Magnet {
   String? imageUrl;
 
   Magnet({
-    required this.id,
+    this.id,
     required this.fridgeId,
     required this.userId,
     required this.text,
