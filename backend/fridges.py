@@ -35,7 +35,7 @@ def get_fridge_by_user_id():
             fridges_list.append(fridge_dict)
         conn.close()
         if not fridges_list:
-            return jsonify({'error': 'No fridges found for this user'}), 200
+            fridges_list = []
         return jsonify(fridges_list)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -56,9 +56,10 @@ def get_fridge_by_user_id():
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 500
 
-@token_required
 @fridges.route('/api/fridges/', methods=['POST'])
+@token_required
 def create_fridge(user):
+    print(user.username)
     data = request.json
     if not data or 'name' not in data:
         return jsonify({'error': 'Invalid input'}), 400
@@ -80,8 +81,8 @@ def create_fridge(user):
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Fridge created successfully', 'fridge_id' : fridge_id, 'status': 201})
 
-@token_required
 @fridges.route('/api/fridges/', methods=['PATCH'])
+@token_required
 def update_fridge(user):
     data = request.json
     if not data or 'fridge_id' not in data:
@@ -111,8 +112,8 @@ def update_fridge(user):
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Fridge updated successfully'}, 200)
 
-@token_required
 @fridges.route('/api/fridges/', methods=['DELETE'])
+@token_required
 def delete_fridge(user):
     data = request.json
     if not data or 'fridge_id' not in data:

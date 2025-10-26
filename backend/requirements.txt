@@ -1,5 +1,6 @@
 flask
 requests
 flask-login
+flask-cors
 PyJWT
 python-dotenv

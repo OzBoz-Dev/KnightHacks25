@@ -17,8 +17,10 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+        auth_header = request.headers.get('Authorization', None)
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            print(token)
         if not token:
             return jsonify({'error': 'Token is missing!'}), 401
         try:
@@ -27,6 +29,7 @@ def token_required(f):
         except:
             return jsonify({'error': 'Token is invalid!'}), 401
         return f(current_user, *args, **kwargs)
+    return decorated
 
 class User(UserMixin):
     def __init__(self, username, password_hash):

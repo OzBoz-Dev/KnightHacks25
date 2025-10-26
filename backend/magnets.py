@@ -34,8 +34,8 @@ def get_magnet_by_id():
     conn.close()
     return jsonify(dict(magnets))
 
-@token_required
 @magnets.route('/api/magnets/', methods=['POST'])
+@token_required
 def create_magnet(user):
     data = request.json
     if not data or not data['user_id']:
@@ -56,13 +56,13 @@ def create_magnet(user):
         conn.close()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    return jsonify({'message': 'Magnet created successfully', 'id' : id}, 201)
+    return jsonify({'message': 'Magnet created successfully', 'id' : id})
 
-@token_required
 @magnets.route('/api/magnets/', methods=['PATCH'])
+@token_required
 def update_magnet(user):
     data = request.json
-    if not data or 'id' not in data:
+    if not data or 'id' not in data or data['id'] is None:
         return jsonify({'error': 'Invalid input'}), 400
     try:
         conn = db_helper.get_connection()
@@ -77,10 +77,10 @@ def update_magnet(user):
             
         cursor.execute('''
             UPDATE magnets
-            SET fridge_id = ?, user_id = ?, text = ?, color = ?, x = ?, y = ?, image_url = ?
+            SET text = ?, color = ?, x = ?, y = ?
             WHERE id = ?
             ''', 
-            (data['fridge_id'], data['user_id'], data['text'], data['color'], data['x'], data['y'], data['image_url'], data['id'])
+            (data['text'], data['color'], data['x'], data['y'], data['id'])
         )
         conn.commit()
         conn.close()
@@ -88,8 +88,8 @@ def update_magnet(user):
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Magnet updated successfully'}, 200)
 
-@token_required
 @magnets.route('/api/magnets/', methods=['DELETE'])
+@token_required
 def delete_magnet(user):
     data = request.json
     if not data or 'id' not in data:

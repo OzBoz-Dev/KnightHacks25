@@ -80,11 +80,13 @@ def init_all():
     conn.close()
     
 if __name__ == '__main__':
-    bobby_tables()
-    init_db()
+    # bobby_tables()
+    # init_db()
     # init_all()
     conn = db_helper.get_connection()
     cursor = conn.cursor()
-    print(cursor.execute('SELECT * FROM magnets').fetchall())
+    magnets = cursor.execute('SELECT * FROM magnets').fetchall()
+    for magnet in magnets:
+        print(dict(magnet))
     print(cursor.execute('SELECT * FROM fridges').fetchall())
     print(cursor.execute('SELECT * FROM users').fetchall())
