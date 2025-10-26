@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from users import token_required
 import db_helper
 
 magnets = Blueprint('magnets', __name__)
@@ -33,11 +34,14 @@ def get_magnet_by_id():
     conn.close()
     return jsonify(dict(magnets))
 
+@token_required
 @magnets.route('/api/magnets/', methods=['POST'])
-def create_magnet():
+def create_magnet(user):
     data = request.json
-    if not data:
+    if not data or not data['user_id']:
         return jsonify({'error': 'Invalid input'}), 400
+    if data['user_id'] != user.username:
+        return jsonify({'error': 'Unauthorized to create a magnet for this user'}), 403
     try:
         conn = db_helper.get_connection()
         cursor = conn.cursor()        
@@ -54,14 +58,23 @@ def create_magnet():
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Magnet created successfully', 'id' : id}, 201)
 
+@token_required
 @magnets.route('/api/magnets/', methods=['PATCH'])
-def update_magnet():
+def update_magnet(user):
     data = request.json
     if not data or 'id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     try:
         conn = db_helper.get_connection()
-        cursor = conn.cursor()        
+        cursor = conn.cursor()   
+        cursor.execute('SELECT * FROM magnets WHERE id = ?', (data['id'],))
+        magnet = cursor.fetchone()
+        
+        if not magnet:
+            return jsonify({'error': 'Fridge not found'}), 404
+        if magnet['user_id'] != user.username:
+            return jsonify({'error': 'Unauthorized to update this magnet'}), 403 
+            
         cursor.execute('''
             UPDATE magnets
             SET fridge_id = ?, user_id = ?, text = ?, color = ?, x = ?, y = ?, image_url = ?
@@ -75,14 +88,23 @@ def update_magnet():
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Magnet updated successfully'}, 200)
 
+@token_required
 @magnets.route('/api/magnets/', methods=['DELETE'])
-def delete_magnet():
+def delete_magnet(user):
     data = request.json
     if not data or 'id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     try:
         conn = db_helper.get_connection()
-        cursor = conn.cursor()        
+        cursor = conn.cursor()       
+        cursor.execute('SELECT * FROM magnets WHERE id = ?', (data['id'],))
+        magnet = cursor.fetchone()
+        
+        if not magnet:
+            return jsonify({'error': 'Fridge not found'}), 404
+        if magnet['user_id'] != user.username:
+            return jsonify({'error': 'Unauthorized to delete this magnet'}), 403   
+        
         cursor.execute('DELETE FROM magnets WHERE id = ?', (data['id'],))
         conn.commit()
         conn.close()

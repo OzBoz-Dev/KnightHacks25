@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 import db_helper
+from users import token_required
 
 fridges = Blueprint('fridges', __name__)
 
@@ -14,17 +15,18 @@ JSON Schema for fridge:
 }
 '''
 @fridges.route('/api/fridges/', methods=['GET'])
-def get_fridge_by_id():
-    data = request.args.get('id')
+def get_fridge_by_user_id():
+    data = request.args.get('user_id')
     if not data:
         return get_all_fridges()
-    fridge_id = int(data)
+    username = int(data)
     try:
         conn = db_helper.get_connection()
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM fridges WHERE fridge_id = ?', (fridge_id,))
+        cursor.execute('SELECT * FROM fridges WHERE user_id = ?', (username,))
         fridge = cursor.fetchone()
         fridge_dict = dict(fridge)
+        fridge_id = fridge_dict['fridge_id']
         fridge_dict['magnets'] = [dict(magnet) for magnet in cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
         conn.close()
         return jsonify(fridge_dict)
@@ -47,11 +49,14 @@ def get_all_fridges():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@token_required
 @fridges.route('/api/fridges/', methods=['POST'])
-def create_fridge():
+def create_fridge(user):
     data = request.json
     if not data or 'name' not in data:
         return jsonify({'error': 'Invalid input'}), 400
+    if data['user_id'] != user.username:
+        return jsonify({'error': 'Unauthorized to create a fridge for this user'}), 403
     try:
         conn = db_helper.get_connection()
         cursor = conn.cursor()        
@@ -68,14 +73,24 @@ def create_fridge():
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Fridge created successfully', 'fridge_id' : fridge_id, 'status': 201})
 
+@token_required
 @fridges.route('/api/fridges/', methods=['PATCH'])
-def update_fridge():
+def update_fridge(user):
     data = request.json
     if not data or 'fridge_id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     try:
         conn = db_helper.get_connection()
-        cursor = conn.cursor()        
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM fridges WHERE fridge_id = ?', (data['fridge_id'],))
+        fridge = cursor.fetchone()
+        
+        if not fridge:
+            return jsonify({'error': 'Fridge not found'}), 404
+        if fridge['user_id'] != user.username:
+            return jsonify({'error': 'Unauthorized to edit this fridge'}), 403
+                
         cursor.execute('''
             UPDATE fridges
             SET name = ?
@@ -89,17 +104,28 @@ def update_fridge():
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Fridge updated successfully'}, 200)
 
+@token_required
 @fridges.route('/api/fridges/', methods=['DELETE'])
-def delete_fridge():
+def delete_fridge(user):
     data = request.json
     if not data or 'fridge_id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     try:
         conn = db_helper.get_connection()
-        cursor = conn.cursor()        
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM fridges WHERE fridge_id = ?', (data['fridge_id'],))
+        fridge = cursor.fetchone()
+        
+        if not fridge:
+            return jsonify({'error': 'Fridge not found'}), 404
+        if fridge['user_id'] != user.username:
+            return jsonify({'error': 'Unauthorized to delete this fridge'}), 403  
+              
         cursor.execute('DELETE FROM fridges WHERE fridge_id = ?', (data['fridge_id'],))
         conn.commit()
         conn.close()
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     return jsonify({'message': 'Fridge deleted successfully'}, 200)
