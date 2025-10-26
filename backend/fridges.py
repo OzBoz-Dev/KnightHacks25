@@ -115,10 +115,11 @@ def update_fridge(user):
 @fridges.route('/api/fridges/', methods=['DELETE'])
 @token_required
 def delete_fridge(user):
-    data = request.json
+    data = request.get_json(force=True)
     if not data or 'fridge_id' not in data:
         return jsonify({'error': 'Invalid input'}), 400
     try:
+        print(data['fridge_id'])
         conn = db_helper.get_connection()
         cursor = conn.cursor()
         
