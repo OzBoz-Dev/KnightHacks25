@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fridgemagnets/models/fridge.dart';
 import 'package:fridgemagnets/pages/add_fridge_page.dart';
 import 'package:fridgemagnets/pages/login_page.dart';
 import 'package:fridgemagnets/providers/auth_provider.dart';
 import 'package:fridgemagnets/providers/fridge_provider.dart';
-import 'package:fridgemagnets/services/fridge_service.dart';
 import 'package:fridgemagnets/widgets/fridge_card.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  final _fridgeNameController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

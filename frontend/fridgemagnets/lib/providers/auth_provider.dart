@@ -17,7 +17,8 @@ class AuthProvider extends ChangeNotifier {
 
   // Constructor - attempt to fetch token
   AuthProvider() {
-    _token = SharedPrefsService().getString("token");
+    _token = SharedPrefsService.instance.getString("token");
+    _username = SharedPrefsService.instance.getString("username");
   }
 
   /// ---- Internal helpers ----
@@ -52,8 +53,10 @@ class AuthProvider extends ChangeNotifier {
     try {
       final token = await _authService.login(username, password);
       _token = token;
-      _username = await _authService.getUserName(token);
-      print("Token: $token");
+      final username2 = await _authService.getUserName(token);
+      _username = username2;
+      await SharedPrefsService.instance.setString("username", username2);
+      await SharedPrefsService.instance.setString("token", token);
     } catch (e) {
       _setError(e.toString());
     } finally {

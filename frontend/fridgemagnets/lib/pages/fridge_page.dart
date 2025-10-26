@@ -46,35 +46,160 @@ class _FridgePageState extends State<FridgePage> {
           Row(
             children: [
               // Left panel with draggable magnets
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Draggable<int>(
-                    data: -1, // A special ID meaning "new magnet"
-                    feedback: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset('assets/yellow_magnet.png'),
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text("Magnets"),
+                    Draggable<int>(
+                      data: -1, // A special ID meaning "new magnet"
+                      feedback: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/green_magnet.png'),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.asset('assets/green_magnet.png'),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/green_magnet.png'),
+                      ),
                     ),
-                    childWhenDragging: Opacity(
-                      opacity: 0.3,
+                    Draggable<int>(
+                      data: -2, // A special ID meaning "new magnet"
+                      feedback: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/yellow_magnet.png'),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.asset('assets/yellow_magnet.png'),
+                        ),
+                      ),
                       child: SizedBox(
                         width: 80,
                         height: 80,
                         child: Image.asset('assets/yellow_magnet.png'),
                       ),
                     ),
-                    child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset('assets/yellow_magnet.png'),
+                    Draggable<int>(
+                      data: -3, // A special ID meaning "new magnet"
+                      feedback: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/red_magnet.png'),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.asset('assets/red_magnet.png'),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/red_magnet.png'),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text("Notes"),
-                ],
+                    const SizedBox(height: 20,),
+                    const Text("Notes"),
+                    Draggable<int>(
+                      data: -4, // A special ID meaning "new magnet"
+                      feedback: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/sticky_note.png'),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.asset('assets/sticky_note.png'),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image.asset('assets/sticky_note.png'),
+                      ),
+                    ),
+                    Draggable<int>(
+                      data: -5, // A special ID meaning "new magnet"
+                      feedback: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(Colors.pinkAccent, BlendMode.srcIn),
+                          child: Image.asset('assets/sticky_note.png')
+                        ),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: ColorFiltered(
+                            colorFilter: ColorFilter.mode(Colors.pinkAccent, BlendMode.srcIn),
+                            child: Image.asset('assets/sticky_note.png')
+                          ),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(Colors.pinkAccent, BlendMode.srcIn),
+                          child: Image.asset('assets/sticky_note.png')
+                        ),
+                      ),
+                    ),
+                    Draggable<int>(
+                      data: -6, // A special ID meaning "new magnet"
+                      feedback: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(Colors.lightBlue, BlendMode.srcIn),
+                          child: Image.asset('assets/sticky_note.png')
+                        ),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: ColorFiltered(
+                            colorFilter: ColorFilter.mode(Colors.lightBlue, BlendMode.srcIn),
+                            child: Image.asset('assets/sticky_note.png')
+                          ),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(Colors.lightBlue, BlendMode.srcIn),
+                          child: Image.asset('assets/sticky_note.png')
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-
               // Fridge area
               Expanded(
                 child: SingleChildScrollView(
@@ -89,15 +214,40 @@ class _FridgePageState extends State<FridgePage> {
                               final Offset localOffset = box.globalToLocal(details.offset);
 
                               // New magnet (from sidebar)
-                              if (details.data == -1) {
+                              if (details.data <= -1) {
+                                String imageUrl = "";
+                                Color color = Colors.transparent;
+                                switch(details.data) {
+                                  case -1:
+                                    imageUrl = 'assets/green_magnet.png';
+                                    break;
+                                  case -2:
+                                    imageUrl = 'assets/yellow_magnet.png';
+                                    break;
+                                  case -3:
+                                    imageUrl = 'assets/red_magnet.png';
+                                    break;
+                                  case -4:
+                                    imageUrl = 'assets/sticky_note.png';
+                                    break;
+                                  case -5:
+                                    imageUrl = 'assets/sticky_note.png';
+                                    color = Colors.pinkAccent;
+                                    break;
+                                  case -6:
+                                    imageUrl = 'assets/sticky_note.png';
+                                    color = Colors.lightBlue;
+                                    break;
+                                }
+
                                 final newMagnet = Magnet(
                                   fridgeId: widget.fridge.id!,
                                   userId: authProvider.username,
                                   text: null,
-                                  color: Colors.transparent,
+                                  color: color,
                                   x: localOffset.dx,
                                   y: localOffset.dy,
-                                  imageUrl: 'assets/yellow_magnet.png',
+                                  imageUrl: imageUrl,
                                 );
 
                                 // Optimistically show it right away
@@ -134,10 +284,6 @@ class _FridgePageState extends State<FridgePage> {
                                 });
 
                                 try {
-                                  print("Magnet Info:");
-                                  print("id: ${magnet.id}");
-                                  print("x: ${magnet.x}");
-                                  print("y: ${magnet.y}");
                                   if (magnet.id != null) {
                                     await MagnetService().updateMagnet(authProvider.token!, magnet);
                                   }
@@ -165,13 +311,13 @@ class _FridgePageState extends State<FridgePage> {
                                         feedback: SizedBox(
                                           width: 80,
                                           height: 80,
-                                          child: Image.asset(_magnets[i].imageUrl ?? ''),
+                                          child: _magnets[i].color == Colors.transparent ? Image.asset(_magnets[i].imageUrl ?? '') : ColorFiltered(colorFilter: ColorFilter.mode(_magnets[i].color!, BlendMode.srcIn), child: Image.asset(_magnets[i].imageUrl ?? ''),),
                                         ),
                                         childWhenDragging: const SizedBox(width: 80, height: 80),
                                         child: SizedBox(
                                           width: 80,
                                           height: 80,
-                                          child: Image.asset(_magnets[i].imageUrl ?? ''),
+                                          child: _magnets[i].color == Colors.transparent ? Image.asset(_magnets[i].imageUrl ?? '') : ColorFiltered(colorFilter: ColorFilter.mode(_magnets[i].color!, BlendMode.srcIn), child: Image.asset(_magnets[i].imageUrl ?? ''),),
                                         ),
                                       ),
                                     )
@@ -193,8 +339,8 @@ class _FridgePageState extends State<FridgePage> {
             bottom: 30,
             right: 30,
             child: DragTarget<int>(
-              onWillAccept: (data) {
-                if (data != null && data >= 0) {
+              onWillAccept: (index) {
+                if (index != null && index >= 0 && index < _magnets.length) {
                   setState(() => isTrashActive = true);
                   return true;
                 }
@@ -203,19 +349,28 @@ class _FridgePageState extends State<FridgePage> {
               onLeave: (_) {
                 setState(() => isTrashActive = false);
               },
-              onAccept: (magnetId) async {
-                final magnet = _magnets.firstWhere((m) => m.id == magnetId);
+              onAccept: (index) async {
+                if (index < 0 || index >= _magnets.length) return; // safety check
+
+                final removedMagnet = _magnets[index];
+
+                // Optimistically remove it
                 setState(() {
-                  _magnets.remove(magnet);
+                  _magnets.removeAt(index);
                   isTrashActive = false;
                 });
 
                 try {
-                  if (magnet.id != null) {
-                    await MagnetService().deleteMagnet(authProvider.token!, magnet);
+                  if (removedMagnet.id != null) {
+                    await MagnetService().deleteMagnet(authProvider.token!, removedMagnet);
                   }
                 } catch (e) {
                   debugPrint('Failed to delete magnet: $e');
+                  // Rollback UI if backend fails
+                  setState(() => _magnets.insert(index, removedMagnet));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to delete magnet.'))
+                  );
                 }
               },
               builder: (context, candidateData, rejectedData) {

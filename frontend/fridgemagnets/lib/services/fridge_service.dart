@@ -69,10 +69,10 @@ class FridgeService {
         Uri.parse(endpoint),
         headers: {
           "Content-Type" : "application/json",
+          "Authorization": "Bearer $token"
         },
         body: jsonEncode({
           "fridge_id": fridge.id,
-          "x-access-token": token
         })
       );
       if(response.statusCode < 200 || response.statusCode >= 300) {

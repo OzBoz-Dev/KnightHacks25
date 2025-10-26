@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fridgemagnets/providers/auth_provider.dart';
+import 'package:fridgemagnets/providers/fridge_provider.dart';
 import 'package:fridgemagnets/services/fridge_service.dart';
 import 'package:provider/provider.dart';
 
@@ -55,11 +56,31 @@ class _AddFridgePageState extends State<AddFridgePage> {
                         final fridgeName = _fridgeNameController.text.trim();
                         if (fridgeName.isNotEmpty) {
                           try {
-                            await FridgeService().createFridge(
+                            final fridgeProvider = context.read<FridgeProvider>();
+                            await fridgeProvider.createFridge(
                               auth.token!,
                               fridgeName,
                               auth.username!
                             );
+                            if(context.mounted) {
+                              if(fridgeProvider.errorMessage == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Added fridge: $fridgeName"),
+                                    backgroundColor: Colors.green,
+                                  )
+                                );
+                              }
+                              else {
+                                print(fridgeProvider.errorMessage);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Failed to add fridge: $fridgeName"),
+                                    backgroundColor: Colors.red,
+                                  )
+                                );
+                              }
+                            }
                           }
                           catch(e) {
                             print("Error: ${e.toString()}");
