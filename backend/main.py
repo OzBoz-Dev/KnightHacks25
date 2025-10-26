@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
+from flask_cors import CORS
 from users import users
 import sqlite3
 from fridges import fridges
@@ -7,6 +8,7 @@ from magnets import magnets
 import db_helper
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 app.register_blueprint(fridges)
 app.register_blueprint(magnets)
 app.register_blueprint(users)

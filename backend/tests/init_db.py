@@ -52,8 +52,8 @@ def bobby_tables():
     conn = db_helper.get_connection()
     cursor = conn.cursor()
     cursor.execute('DROP TABLE IF EXISTS magnets')
-    cursor.execute('DROP TABLE IF EXISTS fridges')
-    cursor.execute('DROP TABLE IF EXISTS users')
+    # cursor.execute('DROP TABLE IF EXISTS fridges')
+    # cursor.execute('DROP TABLE IF EXISTS users')
     
 def init_all():
     conn = db_helper.get_connection()
@@ -81,10 +81,12 @@ def init_all():
     
 if __name__ == '__main__':
     # bobby_tables()
-    init_db()
-    init_all()
+    # init_db()
+    # init_all()
     conn = db_helper.get_connection()
     cursor = conn.cursor()
-    print(cursor.execute('SELECT * FROM magnets').fetchall())
+    magnets = cursor.execute('SELECT * FROM magnets').fetchall()
+    for magnet in magnets:
+        print(dict(magnet))
     print(cursor.execute('SELECT * FROM fridges').fetchall())
     print(cursor.execute('SELECT * FROM users').fetchall())
