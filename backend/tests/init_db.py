@@ -23,7 +23,7 @@ def init_db():
             user_id TEXT,
             name TEXT,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+            FOREIGN KEY (user_id) REFERENCES users(username) ON DELETE CASCADE
             )             
     '''
     )
@@ -52,8 +52,8 @@ def bobby_tables():
     conn = db_helper.get_connection()
     cursor = conn.cursor()
     cursor.execute('DROP TABLE IF EXISTS magnets')
-    # cursor.execute('DROP TABLE IF EXISTS fridges')
-    # cursor.execute('DROP TABLE IF EXISTS users')
+    cursor.execute('DROP TABLE IF EXISTS fridges')
+    cursor.execute('DROP TABLE IF EXISTS users')
     
 def init_all():
     conn = db_helper.get_connection()
@@ -74,7 +74,7 @@ def init_all():
     cursor.execute('''
         INSERT INTO magnets (fridge_id, user_id, text, color, x, y, image_url)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (4, 'user123', 'This is a test magnet', 'red', 100.0, 150.0, 'http://example.com/image.png'))
+    ''', (1, 'user123', 'This is a test magnet', 'red', 100.0, 150.0, 'http://example.com/image.png'))
     
     conn.commit()
     conn.close()
@@ -88,5 +88,15 @@ if __name__ == '__main__':
     magnets = cursor.execute('SELECT * FROM magnets').fetchall()
     for magnet in magnets:
         print(dict(magnet))
+        
+    fridges = cursor.execute('SELECT * FROM fridges').fetchall()
+    for fridge in fridges:
+        print(dict(fridge))
+    
+    users = cursor.execute('SELECT * FROM users').fetchall()
+    for user in users:
+        print(dict(user))
+    
     print(cursor.execute('SELECT * FROM fridges').fetchall())
     print(cursor.execute('SELECT * FROM users').fetchall())
+    conn.close()
