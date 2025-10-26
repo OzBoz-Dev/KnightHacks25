@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
+from users import users
 import sqlite3
 from fridges import fridges
 from magnets import magnets
-from users import users
 import db_helper
 
 app = Flask(__name__)

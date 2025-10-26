@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_login import LoginManager, UserMixin, login_user
+from flask_login import LoginManager, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
 import jwt
@@ -100,7 +100,6 @@ def login():
     if not user or not(check_password_hash(user.password_hash, password)):
         return jsonify({'error': 'Invalid username or password'}), 401
     
-    login_user(user)
     token = jwt.encode({'id' : user.username}, SECRET_KEY, algorithm='HS256')
     
     return jsonify({"token": token})
