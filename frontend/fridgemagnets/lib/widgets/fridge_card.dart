@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:fridgemagnets/models/fridge.dart';
+import 'package:fridgemagnets/models/magnet.dart';
 import 'package:fridgemagnets/pages/fridge_page.dart';
 
 class FridgeCard extends StatelessWidget {
-  final String fridgeName;
-  const FridgeCard({super.key, required this.fridgeName});
+  final Fridge fridge;
+  const FridgeCard({super.key, required this.fridge});
 
   @override
   Widget build(BuildContext context) {
+
+    String fridgeName = fridge.name;
+
     return Card(
       color: Colors.white,
       child: InkWell(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => FridgePage(fridgeName: fridgeName))
+            MaterialPageRoute(builder: (context) => FridgePage(fridge: fridge,))
           );
         },
         child: Column(

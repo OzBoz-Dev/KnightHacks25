@@ -1,14 +1,14 @@
 import 'package:fridgemagnets/models/magnet.dart';
 
 class Fridge {
-  final int id;
-  String? user_id; // who own the fridge
+  int? id;
+  String? userId; // who own the fridge
   String name;
   List<Magnet> magnets;
 
   Fridge({
-    required this.id,
-    this.user_id,
+    this.id,
+    this.userId,
     required this.name,
     required this.magnets
   });

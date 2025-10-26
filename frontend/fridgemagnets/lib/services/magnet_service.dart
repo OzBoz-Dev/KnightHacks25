@@ -35,12 +35,13 @@ class MagnetService {
   }
 
   // POST magnet when placing
-  Future<void> createMagnet(Magnet magnet) async {
+  Future<int> createMagnet(String token, Magnet magnet) async {
     try {
       final response = await http.post(
         Uri.parse(endpoint),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
         },
         body: jsonEncode({
           "fridge_id": magnet.fridgeId,
@@ -53,8 +54,9 @@ class MagnetService {
         })
       );
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw Exception('Failed to update magnet - Status Code: ${response.statusCode}');
+        throw Exception('Failed to create magnet - Status Code: ${response.statusCode}');
       }
+      return jsonDecode(response.body)['id'];
     }
     catch(e) {
       throw Exception(e);
@@ -62,22 +64,20 @@ class MagnetService {
   }
 
   // PATCH magnet data when moving
-  Future<void> updateMagnet(Magnet magnet) async {
+  Future<void> updateMagnet(String token, Magnet magnet) async {
     try {
       final response = await http.patch(
         Uri.parse(endpoint),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
         },
         body: jsonEncode({
           "id": magnet.id,
-          "fridge_id": magnet.fridgeId,
-          "user_id": magnet.userId,
           "text": magnet.text,
           "color": magnet.color?.toARGB32(),
           "x": magnet.x,
           "y": magnet.y,
-          "image_url": magnet.imageUrl,
         })
       );
 
@@ -91,12 +91,13 @@ class MagnetService {
   }
 
   // DELETE magnet data when a magnet is deleted
-  Future<void> deleteMagnet(Magnet magnet) async {
+  Future<void> deleteMagnet(String token, Magnet magnet) async {
     try {
       final response = await http.delete(
         Uri.parse(endpoint),
         headers: {
           "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
         },
         body: jsonEncode({
           "id": magnet.id

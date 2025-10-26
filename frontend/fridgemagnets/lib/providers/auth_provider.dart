@@ -53,6 +53,7 @@ class AuthProvider extends ChangeNotifier {
       final token = await _authService.login(username, password);
       _token = token;
       _username = await _authService.getUserName(token);
+      print("Token: $token");
     } catch (e) {
       _setError(e.toString());
     } finally {

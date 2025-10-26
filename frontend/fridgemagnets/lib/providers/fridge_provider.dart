@@ -7,10 +7,12 @@ class FridgeProvider extends ChangeNotifier {
 
   List<Fridge> _fridges = [];
   bool _isLoading = false;
+  bool _hasFetched = false;
   String? _errorMessage;
 
   List<Fridge> get fridges => _fridges;
   bool get isLoading => _isLoading;
+  bool get hasFetched => _hasFetched;
   String? get errorMessage => _errorMessage;
 
   void _setLoading(bool value) {
@@ -25,6 +27,8 @@ class FridgeProvider extends ChangeNotifier {
 
   /// Fetch list of fridges for a specific username
   Future<void> fetchFridgesByUsername(String username) async {
+    if (_hasFetched) return; // prevent multiple calls
+    _hasFetched = true;
     _setLoading(true);
     _setError(null);
 
@@ -40,13 +44,13 @@ class FridgeProvider extends ChangeNotifier {
   }
 
   /// Create a new fridge
-  Future<void> createFridge(Fridge fridge) async {
+  Future<void> createFridge(String token, String name, String username) async {
     _setLoading(true);
     _setError(null);
 
     try {
-      await _fridgeService.createFridge(fridge);
-      _fridges.add(fridge);
+      await _fridgeService.createFridge(token, name, username);
+      _fridges.add(Fridge(name: name, magnets: []));
       notifyListeners();
     } catch (e) {
       _setError(e.toString().replaceFirst('Exception: ', ''));
@@ -56,12 +60,12 @@ class FridgeProvider extends ChangeNotifier {
   }
 
   /// Delete a fridge
-  Future<void> deleteFridge(Fridge fridge) async {
+  Future<void> deleteFridge(String token, Fridge fridge) async {
     _setLoading(true);
     _setError(null);
 
     try {
-      await _fridgeService.deleteFridge(fridge);
+      await _fridgeService.deleteFridge(token, fridge);
       _fridges.removeWhere((f) => f.id == fridge.id);
       notifyListeners();
     } catch (e) {
