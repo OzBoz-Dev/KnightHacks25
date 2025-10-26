@@ -18,36 +18,43 @@ JSON Schema for fridge:
 def get_fridge_by_user_id():
     data = request.args.get('user_id')
     if not data:
-        return get_all_fridges()
-    username = int(data)
+        return jsonify({'error': 'Invalid input'}), 400
+    username = data
     try:
         conn = db_helper.get_connection()
         cursor = conn.cursor()
+        
         cursor.execute('SELECT * FROM fridges WHERE user_id = ?', (username,))
-        fridge = cursor.fetchone()
-        fridge_dict = dict(fridge)
-        fridge_id = fridge_dict['fridge_id']
-        fridge_dict['magnets'] = [dict(magnet) for magnet in cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
-        conn.close()
-        return jsonify(fridge_dict)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-def get_all_fridges():
-    try:
-        conn = db_helper.get_connection()
-        cursor = conn.cursor()
-        fridges = cursor.execute('SELECT * FROM fridges').fetchall()
         fridges_list = []
-        for fridge in fridges:
+        for fridge in cursor.fetchall():  
             fridge_dict = dict(fridge)
             fridge_id = fridge_dict['fridge_id']
-            fridge_dict['magnets'] = [dict(magnet) for magnet in cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
+            fridge_dict['magnets'] = [
+                dict(magnet) for magnet in 
+                cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
             fridges_list.append(fridge_dict)
         conn.close()
+        if not fridges_list:
+            return jsonify({'error': 'No fridges found for this user'}), 200
         return jsonify(fridges_list)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# def get_all_fridges():
+#     try:
+#         conn = db_helper.get_connection()
+#         cursor = conn.cursor()
+#         fridges = cursor.execute('SELECT * FROM fridges').fetchall()
+#         fridges_list = []
+#         for fridge in fridges:
+#             fridge_dict = dict(fridge)
+#             fridge_id = fridge_dict['fridge_id']
+#             fridge_dict['magnets'] = [dict(magnet) for magnet in cursor.execute('SELECT * FROM magnets WHERE fridge_id = ?', (fridge_id,)).fetchall()]
+#             fridges_list.append(fridge_dict)
+#         conn.close()
+#         return jsonify(fridges_list)
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 @token_required
 @fridges.route('/api/fridges/', methods=['POST'])
