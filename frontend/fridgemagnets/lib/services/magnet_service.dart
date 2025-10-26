@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'package:fridgemagnets/consts.dart';
 import 'package:fridgemagnets/models/magnet.dart';
 import 'package:http/http.dart' as http;
 
 class MagnetService {
 
-  final String url = "http://10.37.48.242:5000/api/magnets/";
+  final String endpoint = "${AppConstants.apiUrl}/magnets/";
 
   // GET magnets (localhost/api/magnets)
   Future<Magnet> getMagnetById({int magnetId = 0}) async {
     try {
       final response = await http.get(
-        Uri.parse("$url?id=$magnetId"),
+        Uri.parse("$endpoint?id=$magnetId"),
         headers: {
           "Content-Type": "application/json",
         },
@@ -37,7 +38,7 @@ class MagnetService {
   Future<void> createMagnet(Magnet magnet) async {
     try {
       final response = await http.post(
-        Uri.parse(url),
+        Uri.parse(endpoint),
         headers: {
           "Content-Type": "application/json"
         },
@@ -64,7 +65,7 @@ class MagnetService {
   Future<void> updateMagnet(Magnet magnet) async {
     try {
       final response = await http.patch(
-        Uri.parse(url),
+        Uri.parse(endpoint),
         headers: {
           "Content-Type": "application/json"
         },
@@ -93,7 +94,7 @@ class MagnetService {
   Future<void> deleteMagnet(Magnet magnet) async {
     try {
       final response = await http.delete(
-        Uri.parse(url),
+        Uri.parse(endpoint),
         headers: {
           "Content-Type": "application/json",
         },
