@@ -62,14 +62,32 @@ def test_fridge_endpoints():
     response = requests.delete(url, json={'fridge_id': 1})
     print(response.text)
 
+def test_user_endpoints():
+    url = 'http://localhost:5000/api/users/'
+    response = requests.post(url + 'register/', json={
+        'username': 'testuser1',
+        'password': 'testpassword'
+    })
+    print(response.text)
+    
+    response = requests.post(url + 'login/', json={
+        'username': 'testuser1',
+        'password': 'testpassword1'
+    })
+    print(response.text)
+    
+    response = requests.delete(url + 'delete/', json={
+        'username': 'testuser1'
+    })
+    print(response.text)
 
 
-test_magnet_endpoint()
+# test_magnet_endpoint()
 magnets = db_helper.get_connection().execute('SELECT * FROM magnets').fetchall()
 for magnet in magnets:
     print(dict(magnet))
 
-test_fridge_endpoints()
+# test_fridge_endpoints()
 fridges = db_helper.get_connection().execute('SELECT * FROM fridges').fetchall()
 for fridge in fridges:
     print(dict(fridge))
@@ -77,3 +95,8 @@ for fridge in fridges:
 magnets = db_helper.get_connection().execute('SELECT * FROM magnets').fetchall()
 for magnet in magnets:
     print(dict(magnet))
+    
+test_user_endpoints()
+users = db_helper.get_connection().execute('SELECT * FROM users').fetchall()
+for user in users:
+    print(dict(user))
